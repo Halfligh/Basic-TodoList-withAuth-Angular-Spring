@@ -35,3 +35,8 @@ Angular CLI (Command Line Interface) simplifie le développement en générant a
 
 Architecture Complète et Opinionée :
 Angular propose une architecture complète et opinionée qui fournit un cadre structuré pour le développement dès le départ, évitant la nécessité d'assembler plusieurs bibliothèques pour obtenir une solution complète. Cela permet un développement plus rapide et moins de prise de décision sur la structure à adopter, contrairement à React qui est plus flexible mais aussi plus fragmenté.
+
+
+Création du Backend avec Spring Initializr
+
+<img width="1679" alt="Capture d’écran 2024-09-03 à 00 04 43" src="https://github.com/user-attachments/assets/f69daf09-9ea0-4495-b55d-6b0d5c0899b2">
