@@ -1,4 +1,30 @@
+@import '../../assets/styles/common-styles.css';
+
+/* Style du conteneur pour centrer le contenu et ajouter de l'espacement */
 .login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 400px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+/* Style des divs contenant les labels et inputs */
+.login-container > div {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+/* Style des labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
 }
