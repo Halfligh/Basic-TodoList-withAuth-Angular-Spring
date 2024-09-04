@@ -227,14 +227,30 @@
       </svg>
       <h2>Ma todo-list</h2>
       <p class="title-todo">pour apprendre Angular-Java(Spring)-MySQL</p>
-      <p>Connectez-vous pour accéder à votre todo-list 🌟</p>
+      <!-- Message affiché lorsque l'utilisateur n'est pas authentifié -->
+      <p *ngIf="!isAuthenticated">
+        Connectez-vous pour accéder à votre todo-list 🌟
+      </p>
+      <!-- Message affiché lorsque l'utilisateur est authentifié -->
+      <p *ngIf="isAuthenticated">Félicitations, vous êtes connectés ! 🎉</p>
+
       <!-- Affiche LoginComponent si l'utilisateur n'est pas connecté -->
       <app-login *ngIf="!isAuthenticated"></app-login>
       <!-- Affiche LogoutComponent si l'utilisateur est connecté -->
       <app-logout *ngIf="isAuthenticated"></app-logout>
     </div>
-    <div class="divider" role="separator" aria-label="Divider"></div>
-    <div class="right-side">
+    <div
+      class="divider"
+      role="separator"
+      aria-label="Divider"
+      [ngClass]="{ 'animate-divider': isAuthenticated }"
+    ></div>
+    <div
+      class="right-side"
+      [ngClass]="{ 'animate-right-side': isAuthenticated }"
+      *ngIf="!isAuthenticated || !animationEnded"
+      (animationend)="onAnimationEnd()"
+    >
       <div class="pill-group">
         @for (item of [ { title: 'Explore the Docs', link: 'https://angular.dev'
         }, { title: 'Learn with Tutorials', link:
@@ -321,6 +337,8 @@
         </a>
       </div>
     </div>
+    <!-- TodoList affiche seulement après l'animation et quand l'utilisateur est connecté -->
+    <app-todo-list *ngIf="isAuthenticated && animationEnded"></app-todo-list>
   </div>
 </main>
 
