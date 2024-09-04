@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 # Angular
 Projet Angular to learn 
-=======
 Fonctionnalités Clés de l’Application
 Authentification Utilisateur avec Services et Guards : WIP - Beginner version done 
 L'application inclut un système de connexion et de déconnexion géré par des services Angular, avec des Guards pour sécuriser les routes et protéger l'accès aux sections réservées. Cette architecture permet une gestion efficace de l'état utilisateur et renforce la sécurité de l'application.
@@ -44,4 +42,8 @@ Angular propose une architecture complète et opinionée qui fournit un cadre st
 Création du Backend avec Spring Initializr
 
 <img width="1679" alt="Capture d’écran 2024-09-03 à 00 04 43" src="https://github.com/user-attachments/assets/f69daf09-9ea0-4495-b55d-6b0d5c0899b2">
->>>>>>> master
+
+
+Création de la Base De Données Manuellement avec MySQL 
+- Installation de MySQL 
+- Création de la base de données angularTodolist
