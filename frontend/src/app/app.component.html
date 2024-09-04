@@ -243,13 +243,24 @@
       class="divider"
       role="separator"
       aria-label="Divider"
-      [ngClass]="{ 'animate-divider': isAuthenticated }"
+      [ngClass]="{
+        'animate-divider': isAuthenticated && !reverseAnimation,
+        'animate-divider-reverse': reverseAnimation
+      }"
+      (animationend)="
+        reverseAnimation ? onReverseAnimationEnd() : onAnimationEnd()
+      "
     ></div>
     <div
       class="right-side"
-      [ngClass]="{ 'animate-right-side': isAuthenticated }"
+      [ngClass]="{
+        'animate-right-side': isAuthenticated && !reverseAnimation,
+        'animate-right-side-reverse': reverseAnimation
+      }"
       *ngIf="!isAuthenticated || !animationEnded"
-      (animationend)="onAnimationEnd()"
+      (animationend)="
+        reverseAnimation ? onReverseAnimationEnd() : onAnimationEnd()
+      "
     >
       <div class="pill-group">
         @for (item of [ { title: 'Explore the Docs', link: 'https://angular.dev'

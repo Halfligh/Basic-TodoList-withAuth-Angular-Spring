@@ -5,7 +5,7 @@ import { AuthService } from './services/auth.service';
 import { RouterOutlet } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
-import { TodoListComponent } from './todo-list/todo-list.component'; // Import du TodoListComponent
+import { TodoListComponent } from './todo-list/todo-list.component';
 
 @Component({
   selector: 'app-root',
@@ -17,28 +17,37 @@ import { TodoListComponent } from './todo-list/todo-list.component'; // Import d
 export class AppComponent {
   title = 'angular-to-do-list';
   isAuthenticated = false;
-  animationEnded = false; // Variable pour suivre la fin de l'animation
+  animationEnded = false;
+  reverseAnimation = false;
 
   constructor(public authService: AuthService) {
     // S'abonner à l'état de connexion
     this.authService.isAuthenticated$.subscribe((isLoggedIn) => {
       this.isAuthenticated = isLoggedIn;
-      // Réinitialise l'état de l'animation lorsqu'on se connecte
       if (isLoggedIn) {
         this.animationEnded = false;
+        this.reverseAnimation = false;
       }
     });
   }
 
-  // Méthode appelée à la fin de l'animation
+  // Méthode appelée à la fin de l'animation normale
   onAnimationEnd() {
     this.animationEnded = true;
   }
 
-  // Méthode de déconnexion (peut être utilisée pour réinitialiser l'état)
+  // Méthode pour déclencher l'animation de déconnexion
   onLogout() {
-    this.authService.logout();
-    this.isAuthenticated = false;
-    this.animationEnded = false;
+    this.reverseAnimation = true; // Déclenche l'animation inverse
+  }
+
+  // Méthode appelée à la fin de l'animation inverse
+  onReverseAnimationEnd() {
+    if (this.reverseAnimation) {
+      this.authService.logout(); // Déclenche la déconnexion une fois l'animation terminée
+      this.isAuthenticated = false; // Réinitialise l'état
+      this.animationEnded = false;
+      this.reverseAnimation = false;
+    }
   }
 }

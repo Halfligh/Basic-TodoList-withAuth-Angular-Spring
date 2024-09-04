@@ -2,7 +2,7 @@
     font-style: italic;
 }
 
-/* Animation pour faire monter le séparateur vers le haut en disparaissant */
+/* Animation pour faire monter le séparateur vers le haut et disparaître */
 @keyframes slideUpAndFadeOut {
     0% {
       transform: translateY(0);
@@ -14,7 +14,7 @@
     }
   }
   
-  /* Animation pour faire partir la partie droite vers la droite en disparaissant */
+  /* Animation pour faire partir le right-side vers la droite et disparaître */
   @keyframes slideRightAndFadeOut {
     0% {
       transform: translateX(0);
@@ -26,11 +26,54 @@
     }
   }
   
-  /* Appliquer les animations seulement si les classes sont présentes */
+  /* Appliquer l'animation au séparateur */
   .animate-divider {
     animation: slideUpAndFadeOut 1s forwards;
   }
   
+  /* Appliquer l'animation au right-side */
   .animate-right-side {
     animation: slideRightAndFadeOut 1s forwards;
   }
+
+  /* Animation de fondu en entrée */
+@keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInRight {
+    0% {
+      opacity: 0;
+      transform: translateX(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Appliquer l'animation de fondu en entrée au separator */
+.divider {
+    animation: fadeIn 1s forwards;
+  }
+  
+  /* Appliquer l'animation de fondu en entrée au right-side */
+  .right-side {
+    animation: fadeInRight 1s forwards;
+  }
+
+    /* Appliquer les animations seulement si les classes sont présentes */
+    .animate-divider {
+        animation: slideUpAndFadeOut 1s forwards;
+      }
+      
+      .animate-right-side {
+        animation: slideRightAndFadeOut 1s forwards;
+      }
