@@ -45,5 +45,5 @@ Création du Backend avec Spring Initializr
 
 
 Création de la Base De Données Manuellement avec MySQL 
-- Installation de MySQL 
+- Installation de MySQL 8.4
 - Création de la base de données angularTodolist
