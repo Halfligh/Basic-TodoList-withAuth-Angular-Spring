@@ -46,4 +46,10 @@ Création du Backend avec Spring Initializr
 
 Création de la Base De Données Manuellement avec MySQL 
 - Installation de MySQL 8.4
-- Création de la base de données angularTodolist
+- CREATE DATABASE angular_to_do_list
+- Configuration du fichier application.properties dans ressources
+- backend : ./mvnw spring-boot:run
+- Using generated security password: b0fd7b3f-e7c2-4db8-8aa6-d1aa9f96d699 (l'un des carctères est différent)
+- Création des models User et Role avec Spring 
+- Correction du bug d'import javax en remplaçant la dépendance javax par la dépendence jakarta 
+- Correction des imports : import jakarta.persistence.*;
