@@ -46,6 +46,7 @@ Création du Backend avec Spring Initializr
 
 Création de la Base De Données Manuellement avec MySQL 
 - Installation de MySQL 8.4
+- Lancer MySQL : mysql -u root -p (vérifier que le brew service est lancé)
 - CREATE DATABASE angular_to_do_list
 - Configuration du fichier application.properties dans ressources
 - backend : ./mvnw spring-boot:run
