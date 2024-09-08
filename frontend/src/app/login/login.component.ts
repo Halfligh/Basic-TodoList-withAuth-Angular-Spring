@@ -1,3 +1,4 @@
+// login.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Import pour *ngIf
 import { FormsModule } from '@angular/forms'; // Import pour ngModel
@@ -18,8 +19,10 @@ export class LoginComponent {
   constructor(private authService: AuthService) {}
 
   onLogin() {
-    if (!this.authService.login(this.username, this.password)) {
-      this.errorMessage = 'Identifiants incorrects';
-    }
+    this.authService.login(this.username, this.password).subscribe(success => {
+      if (!success) {
+        this.errorMessage = 'Identifiants incorrects';
+      }
+    });
   }
 }

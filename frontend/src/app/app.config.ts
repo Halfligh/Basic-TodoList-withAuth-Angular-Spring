@@ -1,9 +1,15 @@
+// app.config.ts
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
-import { routes } from './app.routes';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'; // Assurez-vous d'importer provideHttpClient
 import { provideClientHydration } from '@angular/platform-browser';
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration()]
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideClientHydration(),
+    provideHttpClient(withInterceptorsFromDi()), // Ajoutez cette ligne pour fournir HttpClient
+  ],
 };

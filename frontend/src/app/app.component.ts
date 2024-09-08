@@ -2,7 +2,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
-import { RouterOutlet } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
 import { TodoListComponent } from './todo-list/todo-list.component';
@@ -10,15 +9,14 @@ import { TodoListComponent } from './todo-list/todo-list.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, LoginComponent, LogoutComponent, TodoListComponent],
+  imports: [CommonModule, LoginComponent, LogoutComponent, TodoListComponent],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
   title = 'angular-to-do-list';
   isAuthenticated = false;
   animationEnded = false;
-  reverseAnimation = false;
 
   constructor(public authService: AuthService) {
     // S'abonner à l'état de connexion
@@ -26,7 +24,6 @@ export class AppComponent {
       this.isAuthenticated = isLoggedIn;
       if (isLoggedIn) {
         this.animationEnded = false;
-        this.reverseAnimation = false;
       }
     });
   }

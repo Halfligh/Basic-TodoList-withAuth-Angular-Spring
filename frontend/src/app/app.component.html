@@ -244,23 +244,17 @@
       role="separator"
       aria-label="Divider"
       [ngClass]="{
-        'animate-divider': isAuthenticated && !reverseAnimation,
-        'animate-divider-reverse': reverseAnimation
+        'animate-divider': isAuthenticated,
       }"
-      (animationend)="
-        reverseAnimation ? onReverseAnimationEnd() : onAnimationEnd()
-      "
+      (animationend)="onAnimationEnd()"
     ></div>
     <div
       class="right-side"
       [ngClass]="{
-        'animate-right-side': isAuthenticated && !reverseAnimation,
-        'animate-right-side-reverse': reverseAnimation
+        'animate-right-side': isAuthenticated,
       }"
       *ngIf="!isAuthenticated || !animationEnded"
-      (animationend)="
-        reverseAnimation ? onReverseAnimationEnd() : onAnimationEnd()
-      "
+      (animationend)="onAnimationEnd()"
     >
       <div class="pill-group">
         @for (item of [ { title: 'Explore the Docs', link: 'https://angular.dev'
@@ -360,5 +354,3 @@
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * End of Placeholder  * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-
-<router-outlet />
