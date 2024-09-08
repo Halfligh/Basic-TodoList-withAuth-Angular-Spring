@@ -1,4 +1,3 @@
-// Chemin : src/main/java/com/example/backend/BackendApplication.java
 package com.example.backend;
 
 import com.example.backend.model.Role;

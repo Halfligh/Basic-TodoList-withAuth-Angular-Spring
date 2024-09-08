@@ -1,4 +1,3 @@
-// Chemin : src/main/java/com/example/backend/service/UserService.java
 package com.example.backend.service;
 
 import com.example.backend.model.Role;
@@ -24,7 +23,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Méthode pour créer un nouvel utilisateur
+    // Méthode pour créer un nouvel utilisateur avec des rôles
     public User createUser(String username, String password, Set<Role> roles) {
         // Vérifier si l'utilisateur existe déjà
         if (userRepository.findByUsername(username).isPresent()) {
@@ -35,8 +34,9 @@ public class UserService {
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
-        // user.setRoles(roles != null ? roles : new HashSet<>()); // Ajout des rôles
-        // par défaut s'il n'y en a pas
+        user.setRoles(roles != null ? roles : new HashSet<>()); // Ajout des rôles par défaut s'il n'y en a pas
+
+        // Sauvegarder l'utilisateur avec ses rôles
         return userRepository.save(user);
     }
 

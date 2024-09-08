@@ -1,6 +1,8 @@
 package com.example.backend.model;
 
 import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -15,6 +17,14 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    // Définition de la relation avec les rôles
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_roles", // Nom de la table de jointure
+            joinColumns = @JoinColumn(name = "user_id"), // Clé étrangère pour User dans la table de jointure
+            inverseJoinColumns = @JoinColumn(name = "role_id") // Clé étrangère pour Role dans la table de jointure
+    )
+    private Set<Role> roles = new HashSet<>();
 
     // Constructeurs, getters et setters
 
@@ -43,6 +53,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     // Autres méthodes si nécessaire
