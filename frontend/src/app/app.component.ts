@@ -35,19 +35,4 @@ export class AppComponent {
   onAnimationEnd() {
     this.animationEnded = true;
   }
-
-  // Méthode pour déclencher l'animation de déconnexion
-  onLogout() {
-    this.reverseAnimation = true; // Déclenche l'animation inverse
-  }
-
-  // Méthode appelée à la fin de l'animation inverse
-  onReverseAnimationEnd() {
-    if (this.reverseAnimation) {
-      this.authService.logout(); // Déclenche la déconnexion une fois l'animation terminée
-      this.isAuthenticated = false; // Réinitialise l'état
-      this.animationEnded = false;
-      this.reverseAnimation = false;
-    }
-  }
 }
