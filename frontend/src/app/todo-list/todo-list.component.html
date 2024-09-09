@@ -19,7 +19,9 @@
     >
       <input type="checkbox" [(ngModel)]="task.completed" />
       <span>{{ task.text }}</span>
-      <button (click)="deleteTask(i)" class="delete-button">Supprimer</button>
+      <button (click)="deleteTask(i, task.id)" class="delete-button">
+        Supprimer
+      </button>
     </li>
   </ul>
 </div>

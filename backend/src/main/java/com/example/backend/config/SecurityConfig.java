@@ -1,9 +1,8 @@
+// SecurityConfig.java
 package com.example.backend.config;
 
 import com.example.backend.service.UserDetailsServiceImpl;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,24 +20,26 @@ public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public SecurityConfig(@Lazy UserDetailsServiceImpl userDetailsService) {
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
+                .cors() // Activer CORS
+                .and()
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated());
+                        .requestMatchers("/api/tasks/**").authenticated()
+                        .anyRequest().authenticated())
+                .httpBasic();
         return http.build();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
-        // Utilisez AuthenticationConfiguration pour injecter le UserDetailsService et
-        // le PasswordEncoder
         return authenticationConfiguration.getAuthenticationManager();
     }
 
