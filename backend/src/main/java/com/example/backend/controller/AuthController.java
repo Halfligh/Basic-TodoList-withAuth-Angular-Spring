@@ -1,6 +1,7 @@
 // AuthController.java
 package com.example.backend.controller;
 
+import java.util.Collections;
 import com.example.backend.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,18 +24,16 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody Map<String, String> loginRequest) {
-        // Extraire les données du JSON de la requête
         String username = loginRequest.get("username");
         String password = loginRequest.get("password");
 
-        // Créer l'objet Authentication
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password));
 
         // Générer le token JWT
         String jwt = tokenProvider.generateToken(authentication);
 
-        // Retourner le token en réponse
-        return ResponseEntity.ok(jwt);
+        // Retourner le token dans un objet JSON
+        return ResponseEntity.ok(Collections.singletonMap("token", jwt));
     }
 }
