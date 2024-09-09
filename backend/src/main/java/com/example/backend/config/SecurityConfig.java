@@ -32,8 +32,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Intégration de la configuration
-                                                                                   // CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configuration CORS unique ici
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/tasks/**").authenticated()
