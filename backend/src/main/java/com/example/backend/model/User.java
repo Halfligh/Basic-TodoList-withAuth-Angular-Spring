@@ -19,11 +19,8 @@ public class User {
     private String password;
 
     // Définition de la relation avec les rôles
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles", // Nom de la table de jointure
-            joinColumns = @JoinColumn(name = "user_id"), // Clé étrangère pour User dans la table de jointure
-            inverseJoinColumns = @JoinColumn(name = "role_id") // Clé étrangère pour Role dans la table de jointure
-    )
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
     // Constructeurs, getters et setters
