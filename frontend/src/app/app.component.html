@@ -232,8 +232,12 @@
         Connectez-vous pour accéder à votre todo-list 🌟
       </p>
       <!-- Message affiché lorsque l'utilisateur est authentifié -->
-      <p *ngIf="isAuthenticated">Félicitations, vous êtes connectés ! 🎉</p>
-
+      <p *ngIf="isAuthenticated && isAdmin()">
+        Félicitations, vous êtes connecté en tant qu'administrateur ! 🎉
+      </p>
+      <p *ngIf="isAuthenticated && !isAdmin()">
+        Félicitations {{ currentUser }}, vous êtes connecté ! 🎉
+      </p>
       <!-- Affiche LoginComponent si l'utilisateur n'est pas connecté -->
       <app-login *ngIf="!isAuthenticated"></app-login>
       <!-- Affiche LogoutComponent si l'utilisateur est connecté -->

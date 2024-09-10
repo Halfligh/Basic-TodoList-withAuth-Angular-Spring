@@ -1,7 +1,9 @@
 # Angular
 Projet Angular to learn 
 Fonctionnalités Clés de l’Application
-Authentification Utilisateur avec Services et Guards : WIP - Beginner version done 
+
+
+Authentification Utilisateur avec Services et Guards
 L'application inclut un système de connexion et de déconnexion géré par des services Angular, avec des Guards pour sécuriser les routes et protéger l'accès aux sections réservées. Cette architecture permet une gestion efficace de l'état utilisateur et renforce la sécurité de l'application.
 
 Gestion des Tâches avec CRUD (Create, Read, Update, Delete) :
@@ -58,3 +60,4 @@ Création de la Base De Données Manuellement avec MySQL
 - Configuration d'un Command Line Runner qui permet d'automatiquement créer un utilisateur admin
 - Mise en place de l'authentification utilisant un générateur et un validateur de JWTtoken
 - Création du model Task et mise en place de la logique de CRUD en associant chaque tâche à son user 
+- Ajout dans le Command Line Runner de la création d'un deuxième utilisateur JohnDoe, passe : Doe avec le rôle user uniquement

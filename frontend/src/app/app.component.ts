@@ -17,6 +17,7 @@ export class AppComponent {
   title = 'angular-to-do-list';
   isAuthenticated = false;
   animationEnded = false;
+  currentUser: string | null = null; // Ajout de la variable pour stocker l'utilisateur actuel
 
   constructor(public authService: AuthService) {
     // S'abonner à l'état de connexion
@@ -26,6 +27,16 @@ export class AppComponent {
         this.animationEnded = false;
       }
     });
+
+    // S'abonner pour obtenir l'utilisateur actuel depuis AuthService
+    this.authService.currentUser$.subscribe((user) => {
+      this.currentUser = user;
+    });
+  }
+
+  // Vérifie si l'utilisateur est admin
+  isAdmin(): boolean {
+    return this.currentUser === 'admin';
   }
 
   // Méthode appelée à la fin de l'animation normale

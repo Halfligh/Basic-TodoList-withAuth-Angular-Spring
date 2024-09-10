@@ -38,13 +38,16 @@ public class BackendApplication implements CommandLineRunner {
 		Role adminRole = createRoleIfNotExists("ROLE_ADMIN");
 		Role userRole = createRoleIfNotExists("ROLE_USER");
 
-		// Ajouter les rôles à un ensemble de rôles
-		Set<Role> roles = new HashSet<>();
-		roles.add(adminRole);
-		roles.add(userRole);
+		// Créer l'utilisateur admin avec les rôles ROLE_ADMIN et ROLE_USER
+		Set<Role> adminRoles = new HashSet<>();
+		adminRoles.add(adminRole);
+		adminRoles.add(userRole);
+		createDefaultUserIfNotExists("admin", "admin", adminRoles);
 
-		// Créer un utilisateur par défaut si aucun utilisateur n'existe
-		createDefaultUserIfNotExists("admin", "admin", roles);
+		// Créer l'utilisateur JohnDoe avec le rôle ROLE_USER
+		Set<Role> userRoles = new HashSet<>();
+		userRoles.add(userRole);
+		createDefaultUserIfNotExists("JohnDoe", "Doe", userRoles);
 	}
 
 	// Méthode pour créer un rôle s'il n'existe pas
@@ -52,8 +55,6 @@ public class BackendApplication implements CommandLineRunner {
 		return roleRepository.findByName(roleName).orElseGet(() -> {
 			Role newRole = new Role();
 			newRole.setName(roleName);
-			// Utilisation de saveAndFlush pour s'assurer que le rôle est bien persisté
-			// immédiatement
 			Role savedRole = roleRepository.saveAndFlush(newRole);
 			System.out.println("Rôle créé : " + roleName);
 			return savedRole;
@@ -63,15 +64,15 @@ public class BackendApplication implements CommandLineRunner {
 	// Méthode pour créer un utilisateur par défaut s'il n'existe pas
 	private void createDefaultUserIfNotExists(String username, String password, Set<Role> roles) {
 		if (userService.findByUsername(username).isEmpty()) {
-			User adminUser = new User();
-			adminUser.setUsername(username);
-			adminUser.setPassword(passwordEncoder.encode(password)); // Encode the password
-			adminUser.setRoles(roles);
+			User user = new User();
+			user.setUsername(username);
+			user.setPassword(passwordEncoder.encode(password)); // Encoder le mot de passe
+			user.setRoles(roles);
 
-			userService.saveUser(adminUser); // Utiliser la méthode saveUser
-			System.out.println("Utilisateur par défaut créé : " + adminUser.getUsername());
+			userService.saveUser(user); // Sauvegarder l'utilisateur
+			System.out.println("Utilisateur créé : " + user.getUsername());
 		} else {
-			System.out.println("L'utilisateur par défaut existe déjà.");
+			System.out.println("L'utilisateur " + username + " existe déjà.");
 		}
 	}
 }
