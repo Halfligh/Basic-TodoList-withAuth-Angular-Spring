@@ -54,3 +54,7 @@ Création de la Base De Données Manuellement avec MySQL
 - Création des models User et Role avec Spring 
 - Correction du bug d'import javax en remplaçant la dépendance javax par la dépendence jakarta 
 - Correction des imports : import jakarta.persistence.*;
+- Connexion de l'api Spring à la base de donnée MySQL 
+- Configuration d'un Command Line Runner qui permet d'automatiquement créer un utilisateur admin
+- Mise en place de l'authentification utilisant un générateur et un validateur de JWTtoken
+- Création du model Task et mise en place de la logique de CRUD en associant chaque tâche à son user 
