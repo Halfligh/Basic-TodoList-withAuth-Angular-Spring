@@ -85,6 +85,30 @@ public class TaskController {
         }
     }
 
+    // Méthode pour mettre à jour l'état de la tâche (complétée ou non)
+    // Méthode pour mettre à jour l'état de la tâche (complétée ou non)
+    @PutMapping("/{id}/status")
+    public Task updateTaskStatus(@PathVariable Long id, @RequestBody boolean completed) {
+        logger.info("Mise à jour de l'état de la tâche avec ID : " + id);
+
+        User user = getCurrentUser();
+        if (user == null) {
+            logger.error("Problème : utilisateur non authentifié lors de la mise à jour d'une tâche");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
+        }
+
+        try {
+            Task updatedTask = taskService.updateTaskStatus(id, completed, user);
+            logger.info(
+                    "Tâche mise à jour avec succès : " + updatedTask.getId() + ", état : " + updatedTask.isCompleted());
+            return updatedTask;
+        } catch (Exception e) {
+            logger.error("Erreur lors de la mise à jour de l'état de la tâche", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Erreur lors de la mise à jour de la tâche");
+        }
+    }
+
     // Supprimer une tâche
     @DeleteMapping("/{id}")
     public void deleteTask(@PathVariable Long id) {

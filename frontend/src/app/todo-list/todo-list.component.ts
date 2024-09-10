@@ -38,6 +38,24 @@ export class TodoListComponent {
     }
   }
 
+  // Méthode pour vérifier si id bien présent et mettre à jour l'état de la tâche
+  toggleTaskStatus(task: Task) {
+    if (task.id !== undefined) {
+      this.taskService.updateTaskStatus(task.id, task.completed).subscribe(
+        updatedTask => {
+          console.log(`Tâche mise à jour : ${updatedTask.text} - Complétée : ${updatedTask.completed}`);
+        },
+        error => {
+          console.error('Erreur lors de la mise à jour de la tâche', error);
+          // Revertir l'état si la mise à jour échoue
+          task.completed = !task.completed;
+        }
+      );
+    } else {
+      console.error('Erreur : ID de la tâche est indéfini');
+    }
+  }
+
   deleteTask(index: number, taskId?: number) {
     if (taskId !== undefined) {
       this.taskService.deleteTask(taskId).subscribe(() => {

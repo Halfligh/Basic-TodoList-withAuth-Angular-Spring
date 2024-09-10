@@ -50,6 +50,15 @@ export class TaskService {
     return this.http.get<Task[]>(this.apiUrl, { headers });
   }
 
+  // Mettre à jour le statut complétée d'une tâche
+  updateTaskStatus(id: number, completed: boolean): Observable<Task> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    });
+
+    return this.http.put<Task>(`${this.apiUrl}/${id}/status`, completed, { headers });
+  }
+
   // Supprimer une tâche par son ID
   deleteTask(id: number): Observable<void> {
     const headers = new HttpHeaders({
