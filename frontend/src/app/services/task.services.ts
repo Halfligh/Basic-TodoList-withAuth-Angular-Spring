@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, catchError } from 'rxjs';
 
 export interface Task {
   id?: number;
@@ -18,12 +18,28 @@ export class TaskService {
 
   // Créer une nouvelle tâche
   createTask(task: Task): Observable<Task> {
+  
+    const token = localStorage.getItem('token');
+    // Log pour vérifier la présence du token avant la requête
+    console.log('Tentative de création d\'une tâche avec le token:', token);
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assurez-vous que le token est présent ici
     });
 
-    return this.http.post<Task>(this.apiUrl, task, { headers });
-  }
+     // Log pour afficher la tâche à envoyer
+     console.log('Tâche à créer:', task);
+
+      // Exécution de la requête HTTP avec des logs pour chaque étape
+      return this.http.post<Task>(this.apiUrl, task, { headers }).pipe(
+        catchError((error: HttpErrorResponse) => {
+          // Log en cas d'erreur lors de la requête
+          console.error('Erreur lors de la création de la tâche:', error.message);
+          throw error; // Rethrow pour que l'erreur soit gérée ailleurs si nécessaire
+        })
+      );
+    }
+  
 
   // Récupérer toutes les tâches
   getTasks(): Observable<Task[]> {
