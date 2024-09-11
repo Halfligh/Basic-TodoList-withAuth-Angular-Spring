@@ -4,10 +4,13 @@ package com.example.backend.service;
 import com.example.backend.model.Task;
 import com.example.backend.model.User;
 import com.example.backend.repository.TaskRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 public class TaskService {
@@ -42,5 +45,16 @@ public class TaskService {
     // Supprimer une tâche
     public void deleteTask(Long id) {
         taskRepository.deleteById(id);
+    }
+
+    // Méthode pour récupérer les tâches de tous les utilisateurs et les regrouper
+    // par nom d'utilisateur
+    public Map<String, List<Task>> getAllTasksGroupedByUser() {
+        // Récupère toutes les tâches
+        List<Task> tasks = taskRepository.findAll();
+
+        // Groupage des tâches par le nom d'utilisateur
+        return tasks.stream()
+                .collect(Collectors.groupingBy(task -> task.getOwner().getUsername()));
     }
 }

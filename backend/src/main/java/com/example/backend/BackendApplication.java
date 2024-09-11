@@ -35,8 +35,8 @@ public class BackendApplication implements CommandLineRunner {
 	@Transactional // Ajout de @Transactional pour gérer le contexte de persistance
 	public void run(String... args) {
 		// Créer les rôles par défaut si nécessaire
-		Role adminRole = createRoleIfNotExists("ROLE_ADMIN");
-		Role userRole = createRoleIfNotExists("ROLE_USER");
+		Role adminRole = createRoleIfNotExists("ADMIN");
+		Role userRole = createRoleIfNotExists("USER");
 
 		// Créer l'utilisateur admin avec les rôles ROLE_ADMIN et ROLE_USER
 		Set<Role> adminRoles = new HashSet<>();

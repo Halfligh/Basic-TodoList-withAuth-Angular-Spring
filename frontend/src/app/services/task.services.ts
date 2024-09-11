@@ -67,4 +67,9 @@ export class TaskService {
 
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
   }
+
+  // Nouvelle méthode pour récupérer toutes les tâches regroupées par utilisateur pour les administrateurs
+  getAllTasksForAdmin(): Observable<{ [username: string]: Task[] }> {
+    return this.http.get<{ [username: string]: Task[] }>(`${this.apiUrl}/tasks/all`);
+  }
 }

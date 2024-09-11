@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +88,6 @@ public class TaskController {
     }
 
     // Méthode pour mettre à jour l'état de la tâche (complétée ou non)
-    // Méthode pour mettre à jour l'état de la tâche (complétée ou non)
     @PutMapping("/{id}/status")
     public Task updateTaskStatus(@PathVariable Long id, @RequestBody boolean completed) {
         logger.info("Mise à jour de l'état de la tâche avec ID : " + id);
@@ -113,5 +114,39 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public void deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
+    }
+
+    // Nouvelle méthode pour récupérer les tâches de tous les utilisateurs si
+    // l'utilisateur connecté est administrateur
+    @GetMapping("/all")
+    public Map<String, List<Task>> getAllTasksForAdmin() {
+        // Récupérer l'utilisateur actuellement connecté
+        User currentUser = getCurrentUser();
+
+        // Vérifier si l'utilisateur est authentifié et a le rôle d'administrateur
+        if (currentUser != null
+                && currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
+            try {
+                // Appeler le service pour récupérer toutes les tâches regroupées par
+                // utilisateur
+                Map<String, List<Task>> tasksGroupedByUser = taskService.getAllTasksGroupedByUser();
+
+                // Log pour indiquer que les tâches ont été récupérées avec succès
+                logger.info("Récupération réussie des tâches pour l'administrateur.");
+
+                // Retourner les tâches regroupées par utilisateur
+                return tasksGroupedByUser;
+            } catch (Exception e) {
+                // Log en cas d'erreur lors de la récupération des tâches
+                logger.error("Erreur lors de la récupération des tâches pour l'administrateur.", e);
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Erreur lors de la récupération des tâches.");
+            }
+        } else {
+            // Lancer une exception si l'utilisateur n'est pas autorisé
+            logger.warn("Accès interdit : l'utilisateur n'a pas le rôle administrateur.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Accès interdit : Vous devez être administrateur pour accéder à cette ressource.");
+        }
     }
 }

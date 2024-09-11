@@ -1,7 +1,8 @@
-// JwtTokenProvider.java (amélioré)
+// JwtTokenProvider.java
 package com.example.backend.security;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,6 +10,7 @@ import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
@@ -29,9 +31,15 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
 
+        // Extraction des rôles de l'utilisateur
+        String roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
         // Construction du token avec les claims nécessaires
         return Jwts.builder()
                 .setSubject(authentication.getName()) // Sujet du token : nom de l'utilisateur
+                .claim("roles", roles) // Ajout des rôles dans le token
                 .setIssuedAt(now) // Date d'émission
                 .setExpiration(expiryDate) // Date d'expiration
                 .signWith(key, SignatureAlgorithm.HS256) // Signature avec la clé secrète et algorithme HS256

@@ -12,6 +12,8 @@ export class AuthService {
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
   private currentUserSubject = new BehaviorSubject<string | null>(this.getUsernameFromToken());
   currentUser$ = this.currentUserSubject.asObservable();
+  private rolesSubject = new BehaviorSubject<string[]>(this.getRolesFromToken());
+  roles$ = this.rolesSubject.asObservable(); // Observable pour les rôles
 
   private apiUrl = 'http://localhost:8080/api/auth'; // Assurez-vous que c'est l'URL correcte de votre backend
 
@@ -20,84 +22,64 @@ export class AuthService {
   login(username: string, password: string): Observable<boolean> {
     return this.http.post<{ token: string }>(`${this.apiUrl}/login`, { username, password }).pipe(
       tap(response => {
-        if (response.token) {
-          this.setToken(response.token); // Utilise une méthode sécurisée pour stocker le token
+        if (response.token && this.isClient()) {
+          localStorage.setItem('token', response.token); // Stocke le token pour les requêtes futures
           this.isAuthenticatedSubject.next(true); // Met à jour l'état d'authentification
+          const roles = this.getRolesFromToken(response.token);
+          this.rolesSubject.next(roles); // Met à jour les rôles
           this.currentUserSubject.next(this.getUsernameFromToken(response.token)); // Récupère le nom d'utilisateur
         }
       }),
-      map(response => !!response.token), // Retourne true si le token est présent
+      map(response => !!response.token),
       catchError(error => {
         console.error('Échec de la connexion', error);
-        this.isAuthenticatedSubject.next(false); // Mise à jour en cas d'échec de connexion
-        this.currentUserSubject.next(null); // Réinitialise l'utilisateur courant
-        return of(false); // Connexion échouée
+        this.isAuthenticatedSubject.next(false);
+        this.currentUserSubject.next(null);
+        this.rolesSubject.next([]);
+        return of(false);
       })
     );
   }
 
   logout() {
-    this.removeToken(); // Utilise une méthode sécurisée pour supprimer le token
-    this.isAuthenticatedSubject.next(false); // Met à jour l'état d'authentification
-    this.currentUserSubject.next(null); // Réinitialise l'utilisateur courant
+    if (this.isClient()) {
+      localStorage.removeItem('token');
+    }
+    this.isAuthenticatedSubject.next(false);
+    this.currentUserSubject.next(null);
+    this.rolesSubject.next([]);
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken(); // Utilise une méthode sécurisée pour vérifier la présence du token
+    return this.isClient() && !!localStorage.getItem('token');
   }
 
   // Méthode pour extraire le nom d'utilisateur du token JWT
   private getUsernameFromToken(token?: string): string | null {
-    const jwtToken = token || this.getToken();
+    const jwtToken = token || (this.isClient() ? localStorage.getItem('token') : null);
     if (!jwtToken) return null;
 
-    // Décodage du token JWT pour extraire le payload
-    try {
-      const payload = JSON.parse(atob(jwtToken.split('.')[1]));
-      return payload.sub || null; // Retourne le champ 'sub' qui contient souvent le nom d'utilisateur
-    } catch (error) {
-      console.error('Erreur lors du décodage du token JWT', error);
-      return null;
-    }
+    const payload = JSON.parse(atob(jwtToken.split('.')[1]));
+    return payload.sub || null;
   }
 
-  // Méthode sécurisée pour obtenir le token depuis localStorage
-  private getToken(): string | null {
-    if (this.isBrowserEnvironment() && this.isLocalStorageAvailable()) {
-      return localStorage.getItem('token');
-    }
-    return null;
+  // Méthode pour extraire les rôles du token JWT
+  private getRolesFromToken(token?: string): string[] {
+    const jwtToken = token || (this.isClient() ? localStorage.getItem('token') : null);
+    if (!jwtToken) return [];
+  
+    const payload = JSON.parse(atob(jwtToken.split('.')[1]));
+    return payload.roles ? payload.roles.split(',') : []; // Extraction et conversion en tableau
   }
 
-  // Méthode sécurisée pour définir le token dans localStorage
-  private setToken(token: string): void {
-    if (this.isBrowserEnvironment() && this.isLocalStorageAvailable()) {
-      localStorage.setItem('token', token);
-    }
-  }
-
-  // Méthode sécurisée pour supprimer le token de localStorage
-  private removeToken(): void {
-    if (this.isBrowserEnvironment() && this.isLocalStorageAvailable()) {
-      localStorage.removeItem('token');
-    }
-  }
-
-  // Vérifie si on est dans un environnement de navigateur
-  private isBrowserEnvironment(): boolean {
+  // Vérifie si l'environnement est côté client (navigateur)
+  private isClient(): boolean {
     return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
   }
 
-  // Méthode pour vérifier si localStorage est disponible
-  private isLocalStorageAvailable(): boolean {
-    try {
-      const test = '__localStorageTest__';
-      localStorage.setItem(test, test);
-      localStorage.removeItem(test);
-      return true;
-    } catch (error) {
-      console.warn('localStorage n\'est pas disponible.', error);
-      return false;
-    }
+  // Méthode pour vérifier si l'utilisateur est un admin
+  isAdmin(): boolean {
+    const roles = this.rolesSubject.getValue();
+    return roles.includes('ROLE_ADMIN'); // Vérifie si le rôle d'administrateur est présent
   }
 }
