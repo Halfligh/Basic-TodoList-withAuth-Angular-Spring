@@ -232,7 +232,7 @@
         Connectez-vous pour accéder à votre todo-list 🌟
       </p>
       <!-- Message affiché lorsque l'utilisateur est authentifié -->
-      <p *ngIf="isAuthenticated">Rôle : {{ roles.join(", ") }}</p>
+      <p *ngIf="isAuthenticated">Rôle : {{ roles[0] | roleTransform }}</p>
       <p *ngIf="isAuthenticated && isAdmin()">
         Félicitations, vous êtes connecté en tant qu'administrateur ! 🎉
       </p>
@@ -349,15 +349,20 @@
     </div>
     <!-- TodoList affiche seulement après l'animation et quand l'utilisateur est connecté -->
     <ng-container *ngIf="isAuthenticated && animationEnded">
-      <ng-container *ngIf="isAdmin(); else userToDoList">
-        <div *ngFor="let username of getUsernames()">
+      <!-- Affiche la todo-list personnelle, que ce soit un admin ou un utilisateur normal -->
+      <app-todo-list></app-todo-list>
+    </ng-container>
+  </div>
+  <!-- Si l'utilisateur est admin, affiche la liste des todo-lists des autres utilisateurs -->
+  <div class="content-admin">
+    <ng-container *ngIf="isAdmin()">
+      <div *ngFor="let username of getUsernames()">
+        <!-- Ne pas ré-afficher la liste de l'admin (currentUser) s'il est déjà affiché ci-dessus -->
+        <ng-container *ngFor="let username of getUsernames()">
           <h3>ToDoList {{ username }}</h3>
           <app-todo-list [tasks]="tasksGroupedByUser[username]"></app-todo-list>
-        </div>
-      </ng-container>
-      <ng-template #userToDoList>
-        <app-todo-list></app-todo-list>
-      </ng-template>
+        </ng-container>
+      </div>
     </ng-container>
   </div>
 </main>

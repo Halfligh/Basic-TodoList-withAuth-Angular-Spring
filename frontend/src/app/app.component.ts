@@ -6,11 +6,12 @@ import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
 import { TodoListComponent } from './todo-list/todo-list.component';
 import { TaskService, Task } from './services/task.services';
+import { RolePipe } from '../app/pipes/roles.pipe'; 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, LoginComponent, LogoutComponent, TodoListComponent],
+  imports: [CommonModule, LoginComponent, LogoutComponent, TodoListComponent, RolePipe],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
@@ -19,8 +20,9 @@ export class AppComponent {
   isAuthenticated = false;
   animationEnded = false;
   currentUser: string | null = null;
-  roles: string[] = []; // Ajoutez cette variable pour stocker les rôles
+  roles: string[] = [];
   tasksGroupedByUser: { [username: string]: Task[] } = {};
+  userTasks: Task[] = []; // Stocke les tâches de l'utilisateur courant
 
   constructor(public authService: AuthService, private taskService: TaskService) {
     this.authService.isAuthenticated$.subscribe((isLoggedIn) => {
@@ -30,11 +32,12 @@ export class AppComponent {
         this.authService.currentUser$.subscribe((user) => {
           this.currentUser = user;
           this.authService.roles$.subscribe((roles) => {
-            this.roles = roles; // Mettez à jour les rôles ici
+            this.roles = roles; 
+            this.loadUserTasks(); // Charge les tâches de l'utilisateur courant, même pour l'admin
+            if (this.isAdmin()) {
+              this.loadAllTasksForAdmin(); // Charge les tâches des autres utilisateurs si admin
+            }
           });
-          if (this.isAdmin()) {
-            this.loadAllTasksForAdmin();
-          }
         });
       }
     });
@@ -54,6 +57,17 @@ export class AppComponent {
   loadAllTasksForAdmin() {
     this.taskService.getAllTasksForAdmin().subscribe((data) => {
       this.tasksGroupedByUser = data;
+    });
+  }
+
+  // Méthode pour charger les tâches de l'utilisateur courant
+  loadUserTasks() {
+    this.taskService.getTasks().subscribe((tasks) => {
+      this.userTasks = tasks;
+      // Associer les tâches de l'utilisateur courant dans tasksGroupedByUser pour éviter la duplication
+      if (this.currentUser) {
+        this.tasksGroupedByUser[this.currentUser] = tasks;
+      }
     });
   }
 

@@ -77,3 +77,16 @@
       .animate-right-side {
         animation: slideRightAndFadeOut 1s forwards;
       }
+
+
+main{
+  flex-direction: column;
+}
+
+.content-admin{
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 700px;
+    margin-bottom: 3rem;
+}

@@ -70,6 +70,6 @@ export class TaskService {
 
   // Nouvelle méthode pour récupérer toutes les tâches regroupées par utilisateur pour les administrateurs
   getAllTasksForAdmin(): Observable<{ [username: string]: Task[] }> {
-    return this.http.get<{ [username: string]: Task[] }>(`${this.apiUrl}/tasks/all`);
+    return this.http.get<{ [username: string]: Task[] }>(`${this.apiUrl}/all`);
   }
 }
