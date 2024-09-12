@@ -124,7 +124,7 @@ public class TaskController {
 
         // Vérifiez si l'utilisateur a le rôle ADMIN
         if (currentUser != null
-                && currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
+                && currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) {
             try {
                 Map<String, List<Task>> tasksGroupedByUser = taskService.getAllTasksGroupedByUser();
                 logger.info("Récupération réussie des tâches pour l'administrateur.");

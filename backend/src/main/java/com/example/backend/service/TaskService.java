@@ -48,8 +48,6 @@ public class TaskService {
 
     // Méthode pour récupérer les tâches de tous les utilisateurs et les regrouper
     // par nom d'utilisateur
-    // Méthode pour récupérer les tâches de tous les utilisateurs et les regrouper
-    // par nom d'utilisateur
     @Transactional
     public Map<String, List<Task>> getAllTasksGroupedByUser() {
         // Récupère toutes les tâches avec les utilisateurs et leurs rôles

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError } from 'rxjs';
+import { Observable, catchError, tap } from 'rxjs';
 
 export interface Task {
   id?: number;
@@ -83,14 +83,23 @@ export class TaskService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
     });
-
+  
     console.log('Tentative de récupération des tâches pour l\'admin avec le token:', token);
-
+    console.log('En-têtes envoyés:', headers);
+  
     return this.http.get<{ [username: string]: Task[] }>(`${this.apiUrl}/all`, { headers }).pipe(
+      tap((response) => {
+        // Log des données résultantes
+        console.log('Données récupérées:', response);
+      }),
       catchError((error: HttpErrorResponse) => {
         console.error('Erreur lors de la récupération des tâches des utilisateurs pour l\'admin:', error);
+        if (error.status === 403) {
+          console.error('Accès interdit. Vérifiez les permissions et le token.');
+        }
         throw error;
       })
     );
   }
+  
 }
