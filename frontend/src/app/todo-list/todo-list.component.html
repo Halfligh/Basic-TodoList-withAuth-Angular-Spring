@@ -1,5 +1,6 @@
+<!-- todo-list.component.html -->
 <div class="todo-container">
-  <h2>À faire !</h2>
+  <h2>{{ title }}</h2>
   <form (ngSubmit)="addTask()">
     <input
       type="text"
@@ -22,7 +23,6 @@
         [(ngModel)]="task.completed"
         (change)="toggleTaskStatus(task)"
       />
-
       <span>{{ task.text }}</span>
       <button (click)="deleteTask(i, task.id)" class="delete-button">
         Supprimer

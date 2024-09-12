@@ -357,13 +357,22 @@
   <div class="content-admin">
     <div *ngIf="isAuthenticated && isAdmin() && animationEnded">
       <h2>Liste des tâches des utilisateurs</h2>
-      <ng-container *ngFor="let username of getUsernames()">
-        <!-- Ne pas afficher la liste de l'admin dans les listes des autres utilisateurs -->
-        <ng-container *ngIf="username !== currentUser">
-          <h3>Tâches de {{ username }}</h3>
-          <app-todo-list [tasks]="tasksGroupedByUser[username]"></app-todo-list>
+      <div class="task-container">
+        <ng-container *ngFor="let username of getUsernames()">
+          <!-- Ne pas afficher la liste de l'admin dans les listes des autres utilisateurs -->
+          <ng-container *ngIf="username !== currentUser">
+            <div class="user-tasks">
+              <h3>Tâches de {{ username }}</h3>
+              <app-todo-list
+                [tasks]="tasksGroupedByUser[username]"
+                [username]="username"
+                [isAdmin]="isAdmin()"
+              >
+              </app-todo-list>
+            </div>
+          </ng-container>
         </ng-container>
-      </ng-container>
+      </div>
     </div>
   </div>
 </main>

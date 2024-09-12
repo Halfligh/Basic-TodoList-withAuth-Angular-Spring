@@ -90,3 +90,15 @@ main{
     max-width: 700px;
     margin-bottom: 3rem;
 }
+
+.task-container {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 20px; 
+}
+
+.user-tasks {
+  display: flex;
+  flex-direction: column; 
+  min-width: 200px;
+}

@@ -16,15 +16,14 @@ export class TaskService {
 
   constructor(private http: HttpClient) {}
 
-  // Créer une nouvelle tâche
-  createTask(task: Task): Observable<Task> {
+  // Créer une nouvelle tâche pour un utilisateur spécifique
+  createTask(task: Task, username: string): Observable<Task> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`, // Assurez-vous que le token est présent ici
+      'Authorization': `Bearer ${token}`,
     });
-
-    // Exécution de la requête HTTP avec des logs pour chaque étape
-    return this.http.post<Task>(this.apiUrl, task, { headers }).pipe(
+  
+    return this.http.post<Task>(`${this.apiUrl}/${username}/create`, task, { headers }).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('Erreur lors de la création de la tâche:', error.message);
         throw error; // Rethrow pour que l'erreur soit gérée ailleurs si nécessaire
@@ -83,10 +82,10 @@ export class TaskService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
     });
-  
+
     console.log('Tentative de récupération des tâches pour l\'admin avec le token:', token);
     console.log('En-têtes envoyés:', headers);
-  
+
     return this.http.get<{ [username: string]: Task[] }>(`${this.apiUrl}/all`, { headers }).pipe(
       tap((response) => {
         // Log des données résultantes
@@ -101,5 +100,4 @@ export class TaskService {
       })
     );
   }
-  
 }

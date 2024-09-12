@@ -14,6 +14,8 @@ import { TaskService, Task } from '../services/task.services'; // Assurez-vous q
 export class TodoListComponent implements OnInit {
   @Input() tasks: Task[] = []; // Reçoit les tâches en entrée depuis le parent
   @Input() title: string = 'ToDoList'; // Pour afficher le titre avec le nom d'utilisateur
+  @Input() username: string = ''; // Le nom de l'utilisateur auquel appartient la tâche
+  @Input() isAdmin: boolean = false; // Indique si l'utilisateur actuel est un administrateur
   newTask: string = '';
 
   constructor(private taskService: TaskService) {}
@@ -30,21 +32,33 @@ export class TodoListComponent implements OnInit {
       this.tasks = tasks;
     });
   }
-
+  
   addTask() {
+    console.log(`Création de la tâche pour l'utilisateur : ${this.username}`);
+  
     if (this.newTask.trim()) {
-      const newTask: Task = { text: this.newTask, completed: false };
-      this.taskService.createTask(newTask).subscribe((task) => {
-        if (task && task.id) {
-          this.tasks.push(task);
-        } else {
-          console.error('Erreur : la tâche n’a pas d’ID');
+      const taskText = this.isAdmin ? `${this.newTask} (admin)` : this.newTask;
+      const newTask: Task = { text: taskText, completed: false };
+  
+      const usernameToUse = this.isAdmin && this.username ? this.username : '';
+      this.taskService.createTask(newTask, usernameToUse).subscribe(
+        task => {
+          if (task && task.id) {
+            this.tasks.push(task);
+            console.log(`Tâche créée avec succès pour ${this.username}`);
+          } else {
+            console.error('Erreur : la tâche n’a pas d’ID');
+          }
+          this.newTask = '';
+        },
+        error => {
+          console.error('Erreur lors de la création de la tâche', error);
         }
-        this.newTask = '';
-      });
+      );
+    } else {
+      console.log('Le champ de la nouvelle tâche est vide.');
     }
   }
-
   toggleTaskStatus(task: Task) {
     if (task.id !== undefined) {
       this.taskService.updateTaskStatus(task.id, task.completed).subscribe(

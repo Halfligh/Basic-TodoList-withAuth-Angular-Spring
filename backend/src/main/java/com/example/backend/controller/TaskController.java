@@ -140,4 +140,38 @@ public class TaskController {
                     "Accès interdit : Vous devez être administrateur pour accéder à cette ressource.");
         }
     }
+
+    // Créer une nouvelle tâche pour un utilisateur spécifié (administrateurs
+    // uniquement)
+
+    @PostMapping("/{username}/create")
+    public Task createTaskForUser(@PathVariable String username, @RequestBody Task task) {
+        // Récupérer l'utilisateur actuellement authentifié
+        User currentUser = getCurrentUser();
+
+        // Vérifiez si l'utilisateur authentifié a le rôle d'administrateur
+        if (currentUser == null || currentUser.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN"))) {
+            logger.warn("Accès interdit : Seul un administrateur peut créer des tâches pour d'autres utilisateurs.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Accès interdit : Vous devez être administrateur pour créer des tâches pour d'autres utilisateurs.");
+        }
+
+        // Rechercher l'utilisateur cible par son nom d'utilisateur
+        User targetUser = userService.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
+
+        // Associer la tâche à l'utilisateur cible
+        task.setOwner(targetUser);
+
+        try {
+            // Créer la tâche pour l'utilisateur spécifié
+            Task createdTask = taskService.createTask(task);
+            logger.info("Tâche créée avec succès pour l'utilisateur : " + targetUser.getUsername());
+            return createdTask;
+        } catch (Exception e) {
+            logger.error("Erreur lors de la création de la tâche pour l'utilisateur : " + targetUser.getUsername(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Erreur lors de la création de la tâche.");
+        }
+    }
 }
