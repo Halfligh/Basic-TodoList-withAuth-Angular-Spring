@@ -1,16 +1,15 @@
-// TaskService.java
 package com.example.backend.service;
 
 import com.example.backend.model.Task;
 import com.example.backend.model.User;
 import com.example.backend.repository.TaskRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
@@ -49,9 +48,12 @@ public class TaskService {
 
     // Méthode pour récupérer les tâches de tous les utilisateurs et les regrouper
     // par nom d'utilisateur
+    // Méthode pour récupérer les tâches de tous les utilisateurs et les regrouper
+    // par nom d'utilisateur
+    @Transactional
     public Map<String, List<Task>> getAllTasksGroupedByUser() {
-        // Récupère toutes les tâches
-        List<Task> tasks = taskRepository.findAll();
+        // Récupère toutes les tâches avec les utilisateurs et leurs rôles
+        List<Task> tasks = taskRepository.findAllWithUsersAndRoles();
 
         // Groupage des tâches par le nom d'utilisateur
         return tasks.stream()

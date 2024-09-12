@@ -120,30 +120,21 @@ public class TaskController {
     // l'utilisateur connecté est administrateur
     @GetMapping("/all")
     public Map<String, List<Task>> getAllTasksForAdmin() {
-        // Récupérer l'utilisateur actuellement connecté
         User currentUser = getCurrentUser();
 
-        // Vérifier si l'utilisateur est authentifié et a le rôle d'administrateur
+        // Vérifiez si l'utilisateur a le rôle ADMIN
         if (currentUser != null
                 && currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
             try {
-                // Appeler le service pour récupérer toutes les tâches regroupées par
-                // utilisateur
                 Map<String, List<Task>> tasksGroupedByUser = taskService.getAllTasksGroupedByUser();
-
-                // Log pour indiquer que les tâches ont été récupérées avec succès
                 logger.info("Récupération réussie des tâches pour l'administrateur.");
-
-                // Retourner les tâches regroupées par utilisateur
                 return tasksGroupedByUser;
             } catch (Exception e) {
-                // Log en cas d'erreur lors de la récupération des tâches
                 logger.error("Erreur lors de la récupération des tâches pour l'administrateur.", e);
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                         "Erreur lors de la récupération des tâches.");
             }
         } else {
-            // Lancer une exception si l'utilisateur n'est pas autorisé
             logger.warn("Accès interdit : l'utilisateur n'a pas le rôle administrateur.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "Accès interdit : Vous devez être administrateur pour accéder à cette ressource.");

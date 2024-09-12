@@ -68,6 +68,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> {
                     authorize
                             .requestMatchers("/api/auth/**").permitAll()
+                            .requestMatchers("/api/tasks/all").permitAll()
                             .requestMatchers("/api/tasks/**").authenticated()
                             .anyRequest().authenticated();
                     logger.info("Configuration des autorisations HTTP définie");
@@ -118,6 +119,7 @@ public class SecurityConfig {
 
                         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                            logger.info("Rôles de l'utilisateur : " + userDetails.getAuthorities());
                             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                                     userDetails, null, userDetails.getAuthorities());
                             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

@@ -55,9 +55,16 @@ export class AppComponent {
 
   // Méthode pour charger toutes les tâches si l'on est admin
   loadAllTasksForAdmin() {
-    this.taskService.getAllTasksForAdmin().subscribe((data) => {
-      this.tasksGroupedByUser = data;
-    });
+    this.taskService.getAllTasksForAdmin().subscribe(
+      (data) => {
+        console.log('Tâches récupérées pour tous les utilisateurs :', data);
+        this.tasksGroupedByUser = data;
+        console.log('Utilisateurs récupérés :', Object.keys(this.tasksGroupedByUser));
+      },
+      (error) => {
+        console.error('Erreur lors de la récupération des tâches des utilisateurs :', error);
+      }
+    );
   }
 
   // Méthode pour charger les tâches de l'utilisateur courant

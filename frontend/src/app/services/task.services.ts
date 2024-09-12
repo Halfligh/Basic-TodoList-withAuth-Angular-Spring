@@ -18,58 +18,79 @@ export class TaskService {
 
   // Créer une nouvelle tâche
   createTask(task: Task): Observable<Task> {
-  
     const token = localStorage.getItem('token');
-    // Log pour vérifier la présence du token avant la requête
-    console.log('Tentative de création d\'une tâche avec le token:', token);
-
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assurez-vous que le token est présent ici
+      'Authorization': `Bearer ${token}`, // Assurez-vous que le token est présent ici
     });
 
-     // Log pour afficher la tâche à envoyer
-     console.log('Tâche à créer:', task);
-
-      // Exécution de la requête HTTP avec des logs pour chaque étape
-      return this.http.post<Task>(this.apiUrl, task, { headers }).pipe(
-        catchError((error: HttpErrorResponse) => {
-          // Log en cas d'erreur lors de la requête
-          console.error('Erreur lors de la création de la tâche:', error.message);
-          throw error; // Rethrow pour que l'erreur soit gérée ailleurs si nécessaire
-        })
-      );
-    }
-  
-
-  // Récupérer toutes les tâches
-  getTasks(): Observable<Task[]> {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    });
-
-    return this.http.get<Task[]>(this.apiUrl, { headers });
+    // Exécution de la requête HTTP avec des logs pour chaque étape
+    return this.http.post<Task>(this.apiUrl, task, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Erreur lors de la création de la tâche:', error.message);
+        throw error; // Rethrow pour que l'erreur soit gérée ailleurs si nécessaire
+      })
+    );
   }
 
-  // Mettre à jour le statut complétée d'une tâche
-  updateTaskStatus(id: number, completed: boolean): Observable<Task> {
+  // Récupérer toutes les tâches de l'utilisateur courant
+  getTasks(): Observable<Task[]> {
+    const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Authorization': `Bearer ${token}`,
     });
 
-    return this.http.put<Task>(`${this.apiUrl}/${id}/status`, completed, { headers });
+    return this.http.get<Task[]>(this.apiUrl, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Erreur lors de la récupération des tâches:', error);
+        throw error;
+      })
+    );
+  }
+
+  // Mettre à jour le statut complété d'une tâche
+  updateTaskStatus(id: number, completed: boolean): Observable<Task> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+    });
+
+    return this.http.put<Task>(`${this.apiUrl}/${id}/status`, completed, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Erreur lors de la mise à jour du statut de la tâche:', error);
+        throw error;
+      })
+    );
   }
 
   // Supprimer une tâche par son ID
   deleteTask(id: number): Observable<void> {
+    const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Authorization': `Bearer ${token}`,
     });
 
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Erreur lors de la suppression de la tâche:', error);
+        throw error;
+      })
+    );
   }
 
-  // Nouvelle méthode pour récupérer toutes les tâches regroupées par utilisateur pour les administrateurs
+  // Récupérer toutes les tâches regroupées par utilisateur pour les administrateurs
   getAllTasksForAdmin(): Observable<{ [username: string]: Task[] }> {
-    return this.http.get<{ [username: string]: Task[] }>(`${this.apiUrl}/all`);
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+    });
+
+    console.log('Tentative de récupération des tâches pour l\'admin avec le token:', token);
+
+    return this.http.get<{ [username: string]: Task[] }>(`${this.apiUrl}/all`, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Erreur lors de la récupération des tâches des utilisateurs pour l\'admin:', error);
+        throw error;
+      })
+    );
   }
 }

@@ -355,15 +355,16 @@
   </div>
   <!-- Si l'utilisateur est admin, affiche la liste des todo-lists des autres utilisateurs -->
   <div class="content-admin">
-    <ng-container *ngIf="isAdmin()">
-      <div *ngFor="let username of getUsernames()">
-        <!-- Ne pas ré-afficher la liste de l'admin (currentUser) s'il est déjà affiché ci-dessus -->
-        <ng-container *ngFor="let username of getUsernames()">
-          <h3>ToDoList {{ username }}</h3>
+    <div *ngIf="isAuthenticated && isAdmin() && animationEnded">
+      <h2>Liste des tâches des utilisateurs</h2>
+      <ng-container *ngFor="let username of getUsernames()">
+        <!-- Ne pas afficher la liste de l'admin dans les listes des autres utilisateurs -->
+        <ng-container *ngIf="username !== currentUser">
+          <h3>Tâches de {{ username }}</h3>
           <app-todo-list [tasks]="tasksGroupedByUser[username]"></app-todo-list>
         </ng-container>
-      </div>
-    </ng-container>
+      </ng-container>
+    </div>
   </div>
 </main>
 

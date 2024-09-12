@@ -48,6 +48,10 @@ public class BackendApplication implements CommandLineRunner {
 		Set<Role> userRoles = new HashSet<>();
 		userRoles.add(userRole);
 		createDefaultUserIfNotExists("JohnDoe", "Doe", userRoles);
+
+		// Créer l'utilisateur MelanieDoe avec le rôle ROLE_USER
+		userRoles.add(userRole);
+		createDefaultUserIfNotExists("MelanieDoe", "Doe", userRoles);
 	}
 
 	// Méthode pour créer un rôle s'il n'existe pas
