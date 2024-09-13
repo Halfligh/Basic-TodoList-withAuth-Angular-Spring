@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, tap } from 'rxjs';
+import { Observable, catchError, throwError, tap } from 'rxjs';
 
 export interface Task {
   id?: number;
@@ -16,20 +16,37 @@ export class TaskService {
 
   constructor(private http: HttpClient) {}
 
-  // Créer une nouvelle tâche pour un utilisateur spécifique
-  createTask(task: Task, username: string): Observable<Task> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-    });
+    // Créer une nouvelle tâche pour l'utilisateur courant
+    createTask(task: Task): Observable<Task> {
+      const token = localStorage.getItem('token');
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+      });
   
-    return this.http.post<Task>(`${this.apiUrl}/${username}/create`, task, { headers }).pipe(
-      catchError((error: HttpErrorResponse) => {
-        console.error('Erreur lors de la création de la tâche:', error.message);
-        throw error; // Rethrow pour que l'erreur soit gérée ailleurs si nécessaire
-      })
-    );
-  }
+      // Appel à l'API standard pour créer une tâche pour l'utilisateur actuel
+      return this.http.post<Task>(`${this.apiUrl}`, task, { headers }).pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Erreur lors de la création de la tâche pour l\'utilisateur courant :', error.message);
+          return throwError(() => new Error('Erreur lors de la création de la tâche'));
+        })
+      );
+    }
+  
+    // Créer une nouvelle tâche pour un utilisateur spécifique (utilisé par les administrateurs)
+    createTaskForUser(task: Task, username: string): Observable<Task> {
+      const token = localStorage.getItem('token');
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+      });
+  
+      // Appel à l'API pour créer une tâche pour un autre utilisateur (requiert le rôle ADMIN)
+      return this.http.post<Task>(`${this.apiUrl}/${username}/create`, task, { headers }).pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Erreur lors de la création de la tâche pour un autre utilisateur :', error.message);
+          return throwError(() => new Error('Erreur lors de la création de la tâche pour un autre utilisateur'));
+        })
+      );
+    }
 
   // Récupérer toutes les tâches de l'utilisateur courant
   getTasks(): Observable<Task[]> {

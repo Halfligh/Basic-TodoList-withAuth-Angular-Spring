@@ -17,6 +17,7 @@ export class TodoListComponent implements OnInit {
   @Input() username: string = ''; // Le nom de l'utilisateur auquel appartient la tâche
   @Input() isAdmin: boolean = false; // Indique si l'utilisateur actuel est un administrateur
   newTask: string = '';
+  currentUser: string = '';
 
   constructor(private taskService: TaskService) {}
 
@@ -35,30 +36,50 @@ export class TodoListComponent implements OnInit {
   
   addTask() {
     console.log(`Création de la tâche pour l'utilisateur : ${this.username}`);
-  
+
     if (this.newTask.trim()) {
       const taskText = this.isAdmin ? `${this.newTask} (admin)` : this.newTask;
       const newTask: Task = { text: taskText, completed: false };
-  
-      const usernameToUse = this.isAdmin && this.username ? this.username : '';
-      this.taskService.createTask(newTask, usernameToUse).subscribe(
-        task => {
-          if (task && task.id) {
-            this.tasks.push(task);
-            console.log(`Tâche créée avec succès pour ${this.username}`);
-          } else {
-            console.error('Erreur : la tâche n’a pas d’ID');
+
+      // Vérifier si currentUser est le même que username (targetUser)
+      if (this.currentUser === this.username || !this.isAdmin) {
+        // Utiliser la méthode standard de création de tâche pour l'utilisateur connecté
+        this.taskService.createTask(newTask).subscribe(
+          (task) => {
+            if (task && task.id) {
+              this.tasks.push(task);
+              console.log(`Tâche créée avec succès pour ${this.currentUser}`);
+            } else {
+              console.error('Erreur : la tâche n’a pas d’ID');
+            }
+            this.newTask = '';
+          },
+          (error) => {
+            console.error('Erreur lors de la création de la tâche', error);
           }
-          this.newTask = '';
-        },
-        error => {
-          console.error('Erreur lors de la création de la tâche', error);
-        }
-      );
+        );
+      } else {
+        // Utiliser la méthode de création de tâche pour un autre utilisateur (admin seulement)
+        this.taskService.createTaskForUser(newTask, this.username).subscribe(
+          (task) => {
+            if (task && task.id) {
+              this.tasks.push(task);
+              console.log(`Tâche créée avec succès pour ${this.username}`);
+            } else {
+              console.error('Erreur : la tâche n’a pas d’ID');
+            }
+            this.newTask = '';
+          },
+          (error) => {
+            console.error('Erreur lors de la création de la tâche pour un autre utilisateur', error);
+          }
+        );
+      }
     } else {
       console.log('Le champ de la nouvelle tâche est vide.');
     }
   }
+
   toggleTaskStatus(task: Task) {
     if (task.id !== undefined) {
       this.taskService.updateTaskStatus(task.id, task.completed).subscribe(

@@ -1,5 +1,5 @@
 .todo-container {
-    max-width: 500px;
+    max-width: 280px;
     margin: 20px auto;
     padding: 20px;
     border: 1px solid #ddd;
@@ -36,7 +36,6 @@
     padding: 0;
     margin-top: 20px;
   }
-  
   .todo-list li {
     display: flex;
     align-items: center;
@@ -45,6 +44,14 @@
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 4px;
+    overflow: hidden; /* Cache le texte qui dépasse */
+  }
+  
+  .todo-list li .task-text {
+    flex: 1; /* Permet au texte de prendre l'espace disponible */
+    overflow: hidden; /* Cache le texte qui dépasse */
+    white-space: nowrap; /* Empêche le texte de passer à la ligne */
+    text-overflow: ellipsis; /* Ajoute les points de suspension (...) */
   }
   
   .todo-list li.completed span {
