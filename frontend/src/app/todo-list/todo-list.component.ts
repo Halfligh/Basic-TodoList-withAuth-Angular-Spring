@@ -38,8 +38,9 @@ export class TodoListComponent implements OnInit {
     console.log(`Création de la tâche pour l'utilisateur : ${this.username}`);
 
     if (this.newTask.trim()) {
-      const taskText = this.isAdmin ? `${this.newTask} (admin)` : this.newTask;
-      const newTask: Task = { text: taskText, completed: false };
+      const taskText = this.newTask;
+      const addByAdmin = this.isAdmin && this.currentUser !== this.username;
+      const newTask: Task = { text: taskText, completed: false,  addByAdmin  };
 
       // Vérifier si currentUser est le même que username (targetUser)
       if (this.currentUser === this.username || !this.isAdmin) {

@@ -38,6 +38,7 @@ public class TaskService {
         }
 
         task.setCompleted(completed);
+        task.setAddByAdmin(false);
         return taskRepository.save(task);
     }
 

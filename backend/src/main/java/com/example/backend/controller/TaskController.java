@@ -71,6 +71,9 @@ public class TaskController {
         // Associer la tâche à l'utilisateur
         task.setOwner(user);
 
+        // Spécifier que ce n'est pas une tâche ajouté par l'admin mais bien par l'user
+        task.setAddByAdmin(false);
+
         // Log pour indiquer que la tâche est bien associée à l'utilisateur
         logger.info("Tâche associée à l'utilisateur : " + user.getUsername());
 
@@ -162,6 +165,7 @@ public class TaskController {
 
         // Associer la tâche à l'utilisateur cible
         task.setOwner(targetUser);
+        task.setAddByAdmin(true);
 
         try {
             // Créer la tâche pour l'utilisateur spécifié

@@ -15,6 +15,8 @@ public class Task {
 
     private boolean completed;
 
+    private boolean addByAdmin;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false) // Clé étrangère pour lier à l'utilisateur
     private User owner; // Relation avec l'utilisateur propriétaire
@@ -23,7 +25,7 @@ public class Task {
     public Task() {
     }
 
-    public Task(String text, boolean completed, User owner) {
+    public Task(String text, boolean completed, User owner, boolean addByAdmin) {
         this.text = text;
         this.completed = completed;
         this.owner = owner;
@@ -59,5 +61,13 @@ public class Task {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public boolean isAddByAdmin() {
+        return addByAdmin;
+    }
+
+    public void setAddByAdmin(boolean addByAdmin) {
+        this.addByAdmin = addByAdmin;
     }
 }

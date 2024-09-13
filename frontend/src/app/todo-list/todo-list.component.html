@@ -1,4 +1,3 @@
-<!-- todo-list.component.html -->
 <div class="todo-container">
   <h2>{{ title }}</h2>
   <form (ngSubmit)="addTask()">
@@ -22,6 +21,13 @@
         type="checkbox"
         [(ngModel)]="task.completed"
         (change)="toggleTaskStatus(task)"
+      />
+      <!-- Afficher l'icône si la tâche a été ajoutée par un administrateur -->
+      <img
+        *ngIf="task.addByAdmin"
+        src="assets/images/admin-icon.png"
+        alt="admin icon"
+        class="admin-icon"
       />
       <span>{{ task.text }}</span>
       <button (click)="deleteTask(i, task.id)" class="delete-button">
