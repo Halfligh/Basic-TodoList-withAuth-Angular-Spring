@@ -66,4 +66,10 @@ Création de la Base De Données Manuellement avec MySQL
 - Installation de Jenkins avec Homebrew en local pour ce projet et les futurs projets
 - Configuration de base et premier build via Jenkins exécuté 
 - Ajout d'un dossier scripts avec le script shell pour Jenkins et ajout de la permission via chmod +x
+- Rédaction de l'ensemble des tests pour le front-end
+- Création d'un template pour vue globale des tests 
+
+![Tests-Angular-Sébastien](https://github.com/user-attachments/assets/dd315a24-c0cd-4cfe-bd94-1913bca54565)
+
+  
   
