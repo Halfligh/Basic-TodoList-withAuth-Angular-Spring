@@ -57,21 +57,36 @@ export class AuthService {
   // Méthode pour extraire le nom d'utilisateur du token JWT
   private getUsernameFromToken(token?: string): string | null {
     const jwtToken = token || (this.isClient() ? localStorage.getItem('token') : null);
-    if (!jwtToken) return null;
-
-    const payload = JSON.parse(atob(jwtToken.split('.')[1]));
-    return payload.sub || null;
+    if (!jwtToken || jwtToken.split('.').length < 3) {
+      console.error('Token JWT invalide ou vide');
+      return null;
+    }
+  
+    try {
+      const payload = JSON.parse(atob(jwtToken.split('.')[1]));
+      return payload.sub || null;
+    } catch (error) {
+      console.error('Erreur lors du parsing du token JWT', error);
+      return null;
+    }
   }
 
   // Méthode pour extraire les rôles du token JWT
   private getRolesFromToken(token?: string): string[] {
     const jwtToken = token || (this.isClient() ? localStorage.getItem('token') : null);
-    if (!jwtToken) return [];
+    if (!jwtToken || jwtToken.split('.').length < 3) {
+      console.error('Token JWT invalide ou vide');
+      return [];
+    }
   
-    const payload = JSON.parse(atob(jwtToken.split('.')[1]));
-    return payload.roles ? payload.roles.split(',') : []; // Extraction et conversion en tableau
+    try {
+      const payload = JSON.parse(atob(jwtToken.split('.')[1]));
+      return payload.roles ? payload.roles.split(',') : [];
+    } catch (error) {
+      console.error('Erreur lors du parsing du token JWT', error);
+      return [];
+    }
   }
-
   // Vérifie si l'environnement est côté client (navigateur)
   private isClient(): boolean {
     return typeof window !== 'undefined' && typeof localStorage !== 'undefined';

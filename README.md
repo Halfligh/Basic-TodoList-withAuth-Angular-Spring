@@ -60,4 +60,10 @@ Création de la Base De Données Manuellement avec MySQL
 - Configuration d'un Command Line Runner qui permet d'automatiquement créer un utilisateur admin
 - Mise en place de l'authentification utilisant un générateur et un validateur de JWTtoken
 - Création du model Task et mise en place de la logique de CRUD en associant chaque tâche à son user 
-- Ajout dans le Command Line Runner de la création d'un deuxième utilisateur JohnDoe, passe : Doe avec le rôle user uniquement
+- Ajout dans le Command Line Runner de la création d'un deuxième utilisateur JohnDoe, et MelanieDoe passe : Doe avec le rôle user uniquement
+- Ajout de la logique back permettant de créer des tâches en tant qu'admin pour les users 
+- Ajout de la logique front pour permettre de reconnaîtres que les tâches ont été ajouté par l'admin
+- Installation de Jenkins avec Homebrew en local pour ce projet et les futurs projets
+- Configuration de base et premier build via Jenkins exécuté 
+- Ajout d'un dossier scripts avec le script shell pour Jenkins et ajout de la permission via chmod +x
+  
