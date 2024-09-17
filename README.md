@@ -3,54 +3,33 @@ Projet Angular to learn
 Fonctionnalités Clés de l’Application
 
 
-Authentification Utilisateur avec Services et Guards
-L'application inclut un système de connexion et de déconnexion géré par des services Angular, avec des Guards pour sécuriser les routes et protéger l'accès aux sections réservées. Cette architecture permet une gestion efficace de l'état utilisateur et renforce la sécurité de l'application.
+Authentification Utilisateur
+L'application inclut un système de connexion et de déconnexion géré par des services Angular.
 
-Gestion des Tâches avec CRUD (Create, Read, Update, Delete) :
-Les utilisateurs peuvent créer, consulter, modifier et supprimer des tâches via une interface intuitive. L'application utilise les formulaires réactifs d’Angular pour offrir une gestion fluide des tâches avec une validation dynamique.
+Gestion de todo-lists avec CRUD (Create, Read, Update, Delete) : Via une Api Java SpringBoot et une base de donnée MySQL
+Les utilisateurs peuvent créer, consulter, modifier et supprimer des tâches via une interface intuitive. 
 
-Formulaires Dynamiques et Validation Avancée :
-Les formulaires sont dynamiquement ajustables en fonction des entrées utilisateur, permettant par exemple d’ajouter des sous-tâches de manière fluide. Les validateurs personnalisés d’Angular garantissent une validation robuste et adaptable aux besoins spécifiques de l'application.
+Configuration des rôles pour les utilisateurs et privilèges administrateur
+Les utilisateurs ayant le rôle administrateur peuvent accéder aux tâches de tous les utilisateurs et leurs ajouter des tâches, l'application mentionne à l'utilisateur que c'est l'administrateur qui lui a ajouté cette tâche. 
 
-Utilisation de RxJS pour la Gestion des Observables et des Flux de Données :
-L’application intègre RxJS pour gérer les observables et les flux de données asynchrones, rendant l'interaction utilisateur plus réactive et fluide. Cette approche réactive permet de gérer efficacement les données en temps réel.
+Historique du développement de ce projet 
 
-Routing Avancé avec Lazy Loading :
-Le routage avancé d'Angular, incluant le lazy loading des modules, optimise les performances de l'application en ne chargeant que les composants nécessaires à chaque étape de navigation. Cela améliore la vitesse et réduit le temps de chargement initial.
-
-Service Worker et PWA (Progressive Web App) :
-L'application est configurée pour fonctionner comme une PWA, offrant des capacités hors ligne et une expérience utilisateur similaire à une application native, ce qui accroît son accessibilité et son utilisation.
-
-Pourquoi Utiliser Angular plutôt que React ?
-Formulaires Réactifs (Reactive Forms) :
-Angular fournit un système de gestion des formulaires intégré et puissant, permettant de gérer des validations complexes et des interactions utilisateur de manière plus fluide et naturelle. En comparaison, la gestion des formulaires dans React nécessite souvent des bibliothèques tierces pour atteindre un niveau de fonctionnalité similaire.
-
-Services et Injection de Dépendances (DI) :
-Angular intègre nativement un système d’injection de dépendances qui permet une gestion structurée et maintenable de la logique métier via des services. Cela facilite la séparation des préoccupations et rend le code plus modulaire, contrairement à React, qui doit se reposer sur des solutions additionnelles pour la DI.
-
-Routing Avancé avec Guards et Lazy Loading :
-Angular offre un système de routage robuste avec des fonctionnalités avancées telles que les guards pour sécuriser les routes et le lazy loading pour optimiser le chargement des modules. Ces fonctionnalités sont intégrées directement dans Angular, alors qu'avec React, il est nécessaire d'assembler plusieurs bibliothèques pour obtenir des capacités similaires.
-
-RxJS Intégré pour la Gestion Réactive des Données :
-La gestion des données réactives avec RxJS est une partie intégrante d’Angular, facilitant la manipulation des flux de données asynchrones dans l'application. Bien que React puisse également utiliser RxJS, l’intégration n’est pas aussi native, ce qui peut compliquer la gestion des flux de données dans des applications complexes.
-
-CLI Puissant :
-Angular CLI (Command Line Interface) simplifie le développement en générant automatiquement des composants, des services et des modules, ce qui accélère le démarrage et la gestion de l'application. Cette automatisation est particulièrement avantageuse pour structurer des applications de taille moyenne à grande dès le début du projet.
-
-Architecture Complète et Opinionée :
-Angular propose une architecture complète et opinionée qui fournit un cadre structuré pour le développement dès le départ, évitant la nécessité d'assembler plusieurs bibliothèques pour obtenir une solution complète. Cela permet un développement plus rapide et moins de prise de décision sur la structure à adopter, contrairement à React qui est plus flexible mais aussi plus fragmenté.
-
-
-Création du Backend avec Spring Initializr
-
-<img width="1679" alt="Capture d’écran 2024-09-03 à 00 04 43" src="https://github.com/user-attachments/assets/f69daf09-9ea0-4495-b55d-6b0d5c0899b2">
+Création du Frontend avec Angular en initialisant un nouveau projet 
+- Création des composants
+- Création des services
+- Création des styles
 
 
 Création de la Base De Données Manuellement avec MySQL 
 - Installation de MySQL 8.4
 - Lancer MySQL : mysql -u root -p (vérifier que le brew service est lancé)
 - CREATE DATABASE angular_to_do_list
-- Configuration du fichier application.properties dans ressources
+
+
+Création du Backend avec Spring Initializr
+- Initialisation d'un nouvea projet via Spring Initializr
+<img width="1679" alt="Capture d’écran 2024-09-03 à 00 04 43" src="https://github.com/user-attachments/assets/f69daf09-9ea0-4495-b55d-6b0d5c0899b2">
+Configuration du fichier application.properties dans ressources
 - backend : ./mvnw spring-boot:run
 - Using generated security password: b0fd7b3f-e7c2-4db8-8aa6-d1aa9f96d699 (l'un des carctères est différent)
 - Création des models User et Role avec Spring 
@@ -63,12 +42,13 @@ Création de la Base De Données Manuellement avec MySQL
 - Ajout dans le Command Line Runner de la création d'un deuxième utilisateur JohnDoe, et MelanieDoe passe : Doe avec le rôle user uniquement
 - Ajout de la logique back permettant de créer des tâches en tant qu'admin pour les users 
 - Ajout de la logique front pour permettre de reconnaîtres que les tâches ont été ajouté par l'admin
+
+Création du plan de tests automatisés 
 - Installation de Jenkins avec Homebrew en local pour ce projet et les futurs projets
 - Configuration de base et premier build via Jenkins exécuté 
 - Ajout d'un dossier scripts avec le script shell pour Jenkins et ajout de la permission via chmod +x
-- Rédaction de l'ensemble des tests pour le front-end
-- Création d'un template pour vue globale des tests 
-
+- Rédaction de l'ensemble des tests unitaires pour le front-end (Jasmine) 
+- Création d'un template pour vue globale des tests front
 ![Tests-Angular-Sébastien](https://github.com/user-attachments/assets/dd315a24-c0cd-4cfe-bd94-1913bca54565)
 
   
