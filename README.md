@@ -50,6 +50,9 @@ Création du plan de tests automatisés
 - Rédaction de l'ensemble des tests unitaires pour le front-end (Jasmine) 
 - Création d'un template pour vue globale des tests front
 ![Tests-Angular-Sébastien](https://github.com/user-attachments/assets/dd315a24-c0cd-4cfe-bd94-1913bca54565)
-
+- Création de l'ensemble des tests unitaires pour le back-end (JUnit 5, Mockito, et Spring MockMvc)
+- Tests unitaires des services, des controlleurs, des repository et de la securité (JWTtokenProvider)
+- Ajout des dependency nécessaires au pom.xml pour réaliser les tests (mockito, dépendanceH2)
+- Lancement des tests avec mvn test
   
   
