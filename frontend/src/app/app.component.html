@@ -357,22 +357,49 @@
   <div class="content-admin">
     <div *ngIf="isAuthenticated && isAdmin() && animationEnded">
       <h2>Liste des tâches des utilisateurs</h2>
-      <div class="task-container">
-        <ng-container *ngFor="let username of getUsernames()">
-          <!-- Ne pas afficher la liste de l'admin dans les listes des autres utilisateurs -->
-          <ng-container *ngIf="username !== currentUser">
-            <div class="user-tasks">
-              <h3>Tâches de {{ username }}</h3>
-              <app-todo-list
-                [tasks]="tasksGroupedByUser[username]"
-                [username]="username"
-                [isAdmin]="isAdmin()"
-              >
-              </app-todo-list>
-            </div>
+
+      <!-- Vérifier s'il existe au moins une tâche pour les utilisateurs -->
+      <ng-container *ngIf="hasTasks(); else noTasks">
+        <div class="task-container">
+          <ng-container *ngFor="let username of getUsernames()">
+            <!-- Ne pas afficher la liste de l'admin dans les listes des autres utilisateurs -->
+            <ng-container *ngIf="username !== currentUser">
+              <div class="user-tasks">
+                <h3>Tâches de {{ username }}</h3>
+
+                <!-- Vérifier si tasksGroupedByUser[username] est défini et non vide -->
+                <ng-container
+                  *ngIf="
+                    tasksGroupedByUser[username] &&
+                    tasksGroupedByUser[username].length > 0
+                  "
+                >
+                  <app-todo-list
+                    [tasks]="tasksGroupedByUser[username]"
+                    [username]="username"
+                    [isAdmin]="isAdmin()"
+                  ></app-todo-list>
+                </ng-container>
+
+                <!-- Message spécifique si l'utilisateur n'a pas de tâche -->
+                <ng-container
+                  *ngIf="
+                    !tasksGroupedByUser[username] ||
+                    tasksGroupedByUser[username].length === 0
+                  "
+                >
+                  <p>{{ username }} n'a pas encore créé de tâche.</p>
+                </ng-container>
+              </div>
+            </ng-container>
           </ng-container>
-        </ng-container>
-      </div>
+        </div>
+      </ng-container>
+
+      <!-- Message général s'il n'y a aucune tâche pour tous les utilisateurs -->
+      <ng-template #noTasks>
+        <p>Les utilisateurs n'ont pas encore créé de tâches.</p>
+      </ng-template>
     </div>
   </div>
 </main>

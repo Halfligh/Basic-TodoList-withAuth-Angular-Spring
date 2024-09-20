@@ -53,6 +53,18 @@ export class AppComponent {
     return Object.keys(this.tasksGroupedByUser);
   }
 
+  // Méthode pour vérifier si au moins l'un des utilisateur à une tâche pour affichage conditionnel 
+  hasTasks(): boolean {
+    if (!this.tasksGroupedByUser) {
+      return false;
+    }
+  
+    // Vérifier si au moins un utilisateur a des tâches
+    return Object.keys(this.tasksGroupedByUser).some(username => 
+      this.tasksGroupedByUser[username] && this.tasksGroupedByUser[username].length > 0
+    );
+  }
+
   // Méthode pour charger toutes les tâches si l'on est admin
   loadAllTasksForAdmin() {
     this.taskService.getAllTasksForAdmin().subscribe(
@@ -83,3 +95,4 @@ export class AppComponent {
     this.animationEnded = true;
   }
 }
+
