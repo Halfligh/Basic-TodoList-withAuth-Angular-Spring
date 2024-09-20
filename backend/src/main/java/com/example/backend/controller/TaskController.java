@@ -6,6 +6,7 @@ import com.example.backend.service.TaskService;
 import com.example.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,9 +53,8 @@ public class TaskController {
         return taskService.getTasksByUser(user);
     }
 
-    // Créer une nouvelle tâche
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
+    public ResponseEntity<Task> createTask(@RequestBody Task task) {
         // Log de début de la méthode
         logger.info("Début de la création d'une nouvelle tâche");
 
@@ -71,7 +71,8 @@ public class TaskController {
         // Associer la tâche à l'utilisateur
         task.setOwner(user);
 
-        // Spécifier que ce n'est pas une tâche ajouté par l'admin mais bien par l'user
+        // Spécifier que ce n'est pas une tâche ajoutée par l'admin mais bien par
+        // l'utilisateur
         task.setAddByAdmin(false);
 
         // Log pour indiquer que la tâche est bien associée à l'utilisateur
@@ -81,7 +82,9 @@ public class TaskController {
             // Créer la tâche et ajouter un log si cela réussit
             Task createdTask = taskService.createTask(task);
             logger.info("Tâche créée avec succès : " + createdTask.getId());
-            return createdTask;
+
+            // Retourner la réponse avec un statut 201
+            return new ResponseEntity<>(createdTask, HttpStatus.CREATED); // Ici, nous spécifions le statut 201
         } catch (Exception e) {
             // Log en cas d'erreur lors de la création de la tâche
             logger.error("Erreur lors de la création de la tâche", e);

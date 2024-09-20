@@ -2,37 +2,29 @@ package com.example.backend.controller;
 
 import com.example.backend.model.Task;
 import com.example.backend.model.User;
-import com.example.backend.model.Role;
 import com.example.backend.service.TaskService;
 import com.example.backend.service.UserService;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
-import java.util.HashSet;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class TaskControllerTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // <- Remplacez @WebMvcTest ici
+@AutoConfigureMockMvc // <- Ajoutez ceci pour permettre l'utilisation de MockMvc avec SpringBootTest
+public class TaskControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,58 +35,43 @@ class TaskControllerTest {
     @MockBean
     private UserService userService;
 
-    private User testUser;
-    private Task testTask;
+    private User mockUser;
 
     @BeforeEach
-    void setUp() {
-        // Utilisateur avec le rôle USER
-        testUser = new User();
-        testUser.setId(1L);
-        testUser.setUsername("testUser");
-        testUser.setRoles(new HashSet<>(Collections.singletonList(new Role("ROLE_USER"))));
-
-        // Tâche associée à l'utilisateur testUser
-        testTask = new Task();
-        testTask.setId(1L);
-        testTask.setText("Test Task");
-        testTask.setOwner(testUser);
+    public void setUp() {
+        mockUser = new User();
+        mockUser.setUsername("testuser");
+        mockUser.setId(1L);
     }
 
-    private void mockAuthenticationAsUser() {
-        // Créer un UserDetails basé sur testUser avec le rôle ROLE_USER
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                testUser.getUsername(),
-                "password",
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
-
-        // Mock Authentication et SecurityContext
-        Authentication authentication = mock(Authentication.class);
-        when(authentication.getPrincipal()).thenReturn(userDetails);
-
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-
-        when(userService.findByUsername(testUser.getUsername())).thenReturn(Optional.of(testUser));
-    }
-
+    // Test pour récupérer les tâches de l'utilisateur authentifié
     @Test
-    void getUserTasks_ShouldReturnUserTasks_WhenUserIsAuthenticated() throws Exception {
-        // Mock de l'authentification
-        mockAuthenticationAsUser();
+    @WithMockUser(username = "testuser", roles = { "USER" })
+    public void testGetUserTasks_Success() throws Exception {
+        List<Task> tasks = List.of(new Task("Task 1", false, mockUser, false)); // Utilisation du constructeur
+        when(userService.findByUsername("testuser")).thenReturn(Optional.of(mockUser));
+        when(taskService.getTasksByUser(mockUser)).thenReturn(tasks);
 
-        // Simulation du comportement du service
-        when(taskService.getTasksByUser(any(User.class)))
-                .thenReturn(Collections.singletonList(testTask));
-
-        // Simuler une requête GET sans token JWT, juste avec SecurityContextHolder
-        mockMvc.perform(get("/api/tasks")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].text").value("Test Task"));
+                .andExpect(jsonPath("$[0].text").value("Task 1"));
+    }
 
-        // Vérification que la méthode du service a été appelée
-        verify(taskService, times(1)).getTasksByUser(any(User.class));
+    // Test pour créer une tâche avec un utilisateur authentifié
+    @Test
+    @WithMockUser(username = "testuser", roles = { "USER" })
+    public void testCreateTask_Success() throws Exception {
+        Task newTask = new Task("New Task", false, mockUser, false); // Utiliser le constructeur valide
+        newTask.setId(2L); // On peut définir l'ID manuellement pour le test
+
+        when(userService.findByUsername("testuser")).thenReturn(Optional.of(mockUser));
+        when(taskService.createTask(Mockito.any(Task.class))).thenReturn(newTask);
+
+        mockMvc.perform(post("/api/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"text\": \"New Task\" }")) // Remplacer "name" par "text"
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(2))
+                .andExpect(jsonPath("$.text").value("New Task"));
     }
 }
