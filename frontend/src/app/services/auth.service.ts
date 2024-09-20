@@ -1,4 +1,3 @@
-// auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -8,16 +7,31 @@ import { catchError, map, tap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
-  private currentUserSubject = new BehaviorSubject<string | null>(this.getUsernameFromToken());
+  private currentUserSubject = new BehaviorSubject<string | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
-  private rolesSubject = new BehaviorSubject<string[]>(this.getRolesFromToken());
+  private rolesSubject = new BehaviorSubject<string[]>([]);
   roles$ = this.rolesSubject.asObservable(); // Observable pour les rôles
 
   private apiUrl = 'http://localhost:8080/api/auth'; // Assurez-vous que c'est l'URL correcte de votre backend
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    if (this.isClient()) {
+      const token = localStorage.getItem('token');
+      const isTokenValid = token && this.isTokenValid(token);
+
+      if (isTokenValid) {
+        this.isAuthenticatedSubject.next(true);
+        this.currentUserSubject.next(this.getUsernameFromToken(token));
+        this.rolesSubject.next(this.getRolesFromToken(token));
+      } else {
+        this.isAuthenticatedSubject.next(false);
+        this.currentUserSubject.next(null);
+        this.rolesSubject.next([]);
+      }
+    }
+  }
 
   login(username: string, password: string): Observable<boolean> {
     return this.http.post<{ token: string }>(`${this.apiUrl}/login`, { username, password }).pipe(
@@ -25,9 +39,8 @@ export class AuthService {
         if (response.token && this.isClient()) {
           localStorage.setItem('token', response.token); // Stocke le token pour les requêtes futures
           this.isAuthenticatedSubject.next(true); // Met à jour l'état d'authentification
-          const roles = this.getRolesFromToken(response.token);
-          this.rolesSubject.next(roles); // Met à jour les rôles
-          this.currentUserSubject.next(this.getUsernameFromToken(response.token)); // Récupère le nom d'utilisateur
+          this.rolesSubject.next(this.getRolesFromToken(response.token)); // Met à jour les rôles
+          this.currentUserSubject.next(this.getUsernameFromToken(response.token)); // Met à jour l'utilisateur courant
         }
       }),
       map(response => !!response.token),
@@ -54,6 +67,22 @@ export class AuthService {
     return this.isClient() && !!localStorage.getItem('token');
   }
 
+  // Méthode pour vérifier si le token est valide
+  private isTokenValid(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expiration = payload.exp;
+      if (expiration && Date.now() >= expiration * 1000) {
+        console.warn('Token expiré');
+        return false; // Token expiré
+      }
+      return true; // Token valide
+    } catch (error) {
+      console.error('Erreur lors de la validation du token JWT', error);
+      return false;
+    }
+  }
+
   // Méthode pour extraire le nom d'utilisateur du token JWT
   private getUsernameFromToken(token?: string): string | null {
     const jwtToken = token || (this.isClient() ? localStorage.getItem('token') : null);
@@ -61,7 +90,7 @@ export class AuthService {
       console.error('Token JWT invalide ou vide');
       return null;
     }
-  
+
     try {
       const payload = JSON.parse(atob(jwtToken.split('.')[1]));
       return payload.sub || null;
@@ -78,7 +107,7 @@ export class AuthService {
       console.error('Token JWT invalide ou vide');
       return [];
     }
-  
+
     try {
       const payload = JSON.parse(atob(jwtToken.split('.')[1]));
       return payload.roles ? payload.roles.split(',') : [];
@@ -87,6 +116,7 @@ export class AuthService {
       return [];
     }
   }
+
   // Vérifie si l'environnement est côté client (navigateur)
   private isClient(): boolean {
     return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
