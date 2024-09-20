@@ -48,11 +48,13 @@ Création du plan de tests automatisés
 - Configuration de base et premier build via Jenkins exécuté 
 - Ajout d'un dossier scripts avec le script shell pour Jenkins et ajout de la permission via chmod +x
 - Rédaction de l'ensemble des tests unitaires pour le front-end (Jasmine) 
-- Création d'un template pour vue globale des tests front
-![Tests-Angular-Sébastien](https://github.com/user-attachments/assets/dd315a24-c0cd-4cfe-bd94-1913bca54565)
 - Création de l'ensemble des tests unitaires pour le back-end (JUnit 5, Mockito, et Spring MockMvc)
-- Tests unitaires des services, des controlleurs, des repository et de la securité (JWTtokenProvider)
+- Tests unitaires des services, des controlleurs, des repository.
 - Ajout des dependency nécessaires au pom.xml pour réaliser les tests (mockito, dépendanceH2)
 - Lancement des tests avec mvn test
+- Réalisation du plan de la vue globale des tests
+
+  ![Tests-Angular-Spring-Sébastien](https://github.com/user-attachments/assets/c8cb6475-8d99-4049-9c9f-361cdfb6c8a8)
+
   
   
