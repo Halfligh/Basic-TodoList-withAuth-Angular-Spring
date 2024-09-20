@@ -1,4 +1,6 @@
-# Angular
+# Angular-Java-Spring-mySQL  --> Testé via Jasmine/Karma et JUNIT5/Maven
+![Stack](https://github.com/user-attachments/assets/ca5c76b9-0798-40bf-ba3f-ca798f40e241) ![Tests](https://github.com/user-attachments/assets/99371c75-35d5-47a6-b783-222095a961cb)
+
 Projet Angular to learn 
 Fonctionnalités Clés de l’Application
 
